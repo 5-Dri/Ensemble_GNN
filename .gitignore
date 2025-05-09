@@ -6,6 +6,7 @@
 *.pt
 *.pdf
 *.png
+*.md
 
 data/
 multirun/
