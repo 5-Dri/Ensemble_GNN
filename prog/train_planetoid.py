@@ -8,7 +8,7 @@ import torch_geometric.transforms as T
 from torch_geometric.datasets import Planetoid
 
 from models.model_loader import load_net
-from utils import fix_seed, accuracy
+from utils import fix_seed, accuracy, random_splits
 from models.layer import orthonomal_loss
 
 
