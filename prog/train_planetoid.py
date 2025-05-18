@@ -9,6 +9,7 @@ from torch_geometric.datasets import Planetoid
 
 from models.model_loader import load_net
 from utils import fix_seed, accuracy, random_splits
+from ensemble_utils import torch_spread
 from models.layer import orthonomal_loss
 
 
@@ -19,8 +20,8 @@ def train(cfg, data, model, optimizer, device):
     h, _ = model(data.x, data.edge_index)
     prob_labels = F.log_softmax(h, dim=1)
     loss_train  = F.nll_loss(prob_labels[data.train_mask], data.y[data.train_mask])
-    if cfg.global_skip_connection == 'twin': # if it is proposal model
-        loss_train += cfg.coef_orthonomal * orthonomal_loss(model, device)
+    # if cfg.global_skip_connection == 'twin': # if it is proposal model
+    #     loss_train += cfg.coef_orthonomal * orthonomal_loss(model, device)
     loss_train.backward()
     optimizer.step()
 
@@ -68,11 +69,11 @@ def train_and_test(cfg, data, device):
 
 
 def run(cfg, root, device):
-    if cfg.x_normalize:
-        transforms = T.Compose([T.RandomNodeSplit(num_val=500, num_test=500),
-                                T.NormalizeFeatures()])
-    else:
-        transforms = T.Compose([T.RandomNodeSplit(num_val=500, num_test=500)])
+    # if cfg.x_normalize:
+    #     transforms = T.Compose([T.RandomNodeSplit(num_val=500, num_test=500),
+    #                             T.NormalizeFeatures()])
+    # else:
+    #     transforms = T.Compose([T.RandomNodeSplit(num_val=500, num_test=500)])
 
     valid_acces, test_acces, artifacts = [], [], {}
     for tri in tqdm(range(cfg.n_tri)):

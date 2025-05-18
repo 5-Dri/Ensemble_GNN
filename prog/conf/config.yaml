@@ -10,7 +10,7 @@ mlflow:
 
 
 defaults:
-  - override hydra/sweeper: basic # [basic, optuna]
+  - override hydra/sweeper: optuna # [basic, optuna]
 
 # hydra:
 #   sweeper:
@@ -253,6 +253,18 @@ SAGE_PPI: &SAGE_PPI
   learning_rate: 0.005
   weight_decay: 0
 
+# ---------------------
+# my research
+
+Ensemble_GAT_Cora: &EnGAT_Cora
+  <<: [*Cora, *GAT]
+  ensemble: True
+  norm: None
+  n_layer: 2
+  n_hid: 16
+  dropout: 0.4
+  learning_rate: 0.01
+  weight_decay: 0.001
 
 
 

@@ -11,6 +11,7 @@ from train_planetoid  import run as train_planetoid
 from utils import fix_seed, log_params_from_omegaconf_dict, log_artifacts
 
 
+
 @hydra.main(version_base="1.1", config_path='conf', config_name='config')
 def main(cfg: DictConfig):
     cfg_mlflow = cfg.mlflow
