@@ -39,7 +39,7 @@ Cora: &Cora
 CiteSeer: &CiteSeer
   <<: *Planetoid
   dataset: CiteSeer
-  x_normalize: True
+  x_normalize: T.NormalizeFeatures()
   n_feat: 3703
   n_class: 6
 

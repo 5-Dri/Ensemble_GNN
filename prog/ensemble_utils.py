@@ -33,7 +33,7 @@ def torch_spread(GAT_out, pickup_nodes, edge_index, num_nodes, alpha=1.0, max_di
     return final_pred
 
 
-def build_pickup_edge_index(pickup_nodes, data, method="shortest_path", top_k=2):
+def build_pickup_edge_index(pickup_nodes, data, method, top_k):
     G_nx = nx.Graph()
     G_nx.add_edges_from(data.edge_index.t().tolist())
     pickup_list = pickup_nodes.tolist()
