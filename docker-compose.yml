@@ -5,6 +5,9 @@ services:
     ports: 
       - "5000:5000"
     command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlruns --host 0.0.0.0
+    volumes:
+      - ./mlflow_data/mlruns:/mlruns            # 実験ログの永続化
+      - ./mlflow_data/mlflow.db:/mlflow.db      # sqliteファイルの永続化
 
   torch:
     container_name: torch
