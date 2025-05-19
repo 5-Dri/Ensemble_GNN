@@ -54,16 +54,17 @@ def ensemble(cfg, data, device):
     optimizer = torch.optim.Adam(params       = model.parameters(), 
                                  lr           = cfg.learning_rate, 
                                  weight_decay = cfg.weight_decay)
-    pickup_num = int(cfg.num_node * cfg.pickup_ratio)
+    pickup_num = int(cfg.num_nodes * cfg.pickup_ratio)
     available_indices = torch.where(data.train_mask | data.val_mask | data.test_mask)[0]
-
+    pred_sum = torch.zeros((cfg.num_nodes, cfg.n_class), device=device)
+    
 
     for _ in range(cfg.graphs_number):
         if cfg.strategy == "random":
             pickup_nodes = available_indices[torch.randperm(len(available_indices))[:pickup_num]]
 
         else:
-            deg = degree(data.edge_index[0], num_nodes=cfg.num_node)
+            deg = degree(data.edge_index[0], num_nodes=cfg.num_nodes)
             deg = deg[available_indices]
 
             if cfg.strategy == "high_degree":
@@ -77,7 +78,7 @@ def ensemble(cfg, data, device):
             prob = prob.to(available_indices.device)
             pickup_nodes = available_indices[torch.multinomial(prob, pickup_num, replacement=False)].to(device)
 
-        pickup_edge_index = build_pickup_edge_index(pickup_nodes, data, method=cfg.edge_method, top_k=cfg.top_k)
+        pickup_edge_index = build_pickup_edge_index(pickup_nodes, data, cfg)
         pickup_x = data.x[pickup_nodes]
         pickup_y = data.y[pickup_nodes]
 
@@ -102,7 +103,7 @@ def ensemble(cfg, data, device):
             
         model.eval()
         out, _ = model(pickup_data.x, pickup_data.edge_index)
-        spread_pred = torch_spread(out, pickup_nodes, data.edge_index, cfg.num_node, alpha=1.0, max_distance=3)
+        spread_pred = torch_spread(cfg, out, pickup_nodes, data, alpha=1.0, max_distance=3)
         log_pred = F.log_softmax(spread_pred, dim=1)
         pred_sum += log_pred
 
@@ -115,11 +116,10 @@ def ensemble(cfg, data, device):
 
 
 def run(cfg, root, device):
-    # if cfg.x_normalize:
-    #     transforms = T.Compose([T.RandomNodeSplit(num_val=500, num_test=500),
-    #                             T.NormalizeFeatures()])
-    # else:
-    #     transforms = T.Compose([T.RandomNodeSplit(num_val=500, num_test=500)])
+    if cfg.x_normalize:
+        transforms = T.NormalizeFeatures()
+    else:
+        transforms = None
 
     valid_acces, test_acces, artifacts = [], [], {}
     for tri in tqdm(range(cfg.n_tri)):
@@ -130,15 +130,17 @@ def run(cfg, root, device):
         # [train, valid, test] is splited based on above seed
         dataset = Planetoid(root      = root + '/data/' + cfg.dataset,
                             name      = cfg.dataset,
-                            transform = cfg.x_normalize)
+                            transform = transforms)
         data = dataset[0].to(device)
         data, index = random_splits(data=data,num_classes=cfg.n_class,lcc_mask=None)
  
         valid_acc, test_acc = ensemble(cfg, data, device)
 
-
-        valid_acces.append(valid_acc.to('cpu').item())
-        test_acces.append(test_acc.to('cpu').item())
+        valid_acces.append(valid_acc)
+        test_acces.append(test_acc)
+                           
+        # valid_acces.append(valid_acc.to('cpu').item())
+        # test_acces.append(test_acc.to('cpu').item())
         # artifacts['alpha_{}.npy'.format(tri)] = alpha
         # artifacts['correct_{}.npy'.format(tri)] = correct
         # artifacts['test_mask_{}.npy'.format(tri)] = data.test_mask

@@ -35,13 +35,15 @@ Cora: &Cora
   x_normalize: False
   n_feat: 1433
   n_class: 7
+  num_nodes: 2708
 
 CiteSeer: &CiteSeer
   <<: *Planetoid
   dataset: CiteSeer
-  x_normalize: T.NormalizeFeatures()
+  x_normalize: True
   n_feat: 3703
   n_class: 6
+  num_nodes: 3327
 
 PubMed: &PubMed
   <<: *Planetoid
@@ -49,6 +51,7 @@ PubMed: &PubMed
   x_normalize: False
   n_feat: 500
   n_class: 3
+  num_nodes: 19717
 
 # -------datasets (others)-------
 
@@ -265,7 +268,11 @@ Ensemble_GAT_Cora: &EnGAT_Cora
   dropout: 0.4
   learning_rate: 0.01
   weight_decay: 0.001
-
+  pickup_ratio: 0.3
+  strategy: low_degree
+  graphs_number: 30
+  edge_method: shortest_path
+  top_k: 2
 
 
 
@@ -276,3 +283,9 @@ GAT_PubMed_visualize_alpha: &GAT_PubMed_visualize_alpha
   debug_mode: True
   n_layer: 3
 
+
+
+
+debug: &debug
+ <<: *EnGAT_Cora
+ n_tri: 1
