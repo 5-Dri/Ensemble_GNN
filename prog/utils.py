@@ -31,7 +31,7 @@ def index_to_mask(index, size):
     return mask
 
 def random_splits(data, num_classes, lcc_mask=None):
-    torch.manual_seed(42)
+    # torch.manual_seed(42)
     indices = []
     if lcc_mask is not None:
         for i in range(num_classes):

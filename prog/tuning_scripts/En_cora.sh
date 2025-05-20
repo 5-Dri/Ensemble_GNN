@@ -10,9 +10,9 @@ ary=("
      'EnGAT_Cora.dropout=choice(0.,0.4,0.6)' \
      'EnGAT_Cora.learning_rate=choice(0.05,0.01,0.005,0.001)' \
      'EnGAT_Cora.weight_decay=choice(0,1E-4,5E-4,1E-3)' \
-     'EnGAT_Cora.pickup_tario=(0.1, 0.2, 0.3, 0.4)' \
+     'EnGAT_Cora.pickup_ratio=choice(0.1, 0.2, 0.3, 0.4)' \
      'EnGAT_Cora.strategy=choice(random, low_degree)' \
-     'EnGAT_Cora.graphs_number=choice(10, 20, 30, 40)' \
+     'EnGAT_Cora.graphs_number=choice(10, 20, 30, 40, 50, 60)' \
      ")
 
 

@@ -96,7 +96,7 @@ def ensemble(cfg, data, device):
 
 
         for epoch in range(1, cfg.epochs+1):
-            loss_val, acc_val = train(cfg, pickup_data, model, optimizer, device)
+            loss_val, mini_acc_val = train(cfg, pickup_data, model, optimizer, device)
             early_stopping(loss_val, model)
             if early_stopping.early_stop:
                 break
@@ -109,8 +109,10 @@ def ensemble(cfg, data, device):
 
     final_log_pred = pred_sum / cfg.graphs_number
     pred_class = final_log_pred.argmax(dim=1)
-    correct = (pred_class[data.test_mask] == data.y[data.test_mask]).sum().item()
-    acc_test = correct / data.test_mask.sum().item()
+    correct_val = (pred_class[data.val_mask] == data.y[data.val_mask]).sum().item()
+    correct_test = (pred_class[data.test_mask] == data.y[data.test_mask]).sum().item()
+    acc_val = correct_val / data.val_mask.sum().item()
+    acc_test = correct_test / data.test_mask.sum().item()
 
     return acc_val, acc_test
 
@@ -145,4 +147,4 @@ def run(cfg, root, device):
         # artifacts['correct_{}.npy'.format(tri)] = correct
         # artifacts['test_mask_{}.npy'.format(tri)] = data.test_mask
 
-    return valid_acces, test_acces, artifacts
+    return valid_acces, test_acces

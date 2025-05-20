@@ -12,13 +12,13 @@ mlflow:
 defaults:
   - override hydra/sweeper: optuna # [basic, optuna]
 
-# hydra:
-#   sweeper:
-#     sampler:
-#       _target_: optuna.samplers.TPESampler
-#     direction: maximize
-#     n_jobs: 1
-#     n_trials: 100
+hydra:
+  sweeper:
+    sampler:
+      _target_: optuna.samplers.TPESampler
+    direction: maximize
+    n_jobs: 1
+    n_trials: 100
 
 
 # -------datasets (planetoid)-------
@@ -259,10 +259,27 @@ SAGE_PPI: &SAGE_PPI
 # ---------------------
 # my research
 
-Ensemble_GAT_Cora: &EnGAT_Cora
+EnGAT_Cora: &EnGAT_Cora
   <<: [*Cora, *GAT]
   ensemble: True
   norm: None
+  n_head: 8
+  n_layer: 2
+  n_hid: 16
+  dropout: 0.4
+  learning_rate: 0.01
+  weight_decay: 0.001
+  pickup_ratio: 0.3
+  strategy: low_degree
+  graphs_number: 30
+  edge_method: shortest_path
+  top_k: 2
+
+EnGAT_CiteSeer: &EnGAT_CiteSeer
+  <<: [*CiteSeer, *GAT]
+  ensemble: True
+  norm: LayerNorm
+  n_head: 8
   n_layer: 2
   n_hid: 16
   dropout: 0.4

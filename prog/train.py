@@ -25,7 +25,7 @@ def main(cfg: DictConfig):
     with mlflow.start_run():
         log_params_from_omegaconf_dict(cfg)
         if cfg.dataset in ['Cora', 'CiteSeer', 'PubMed']:
-            valid_acces, test_acces, artifacts = train_planetoid(cfg, root, device)
+            valid_acces, test_acces = train_planetoid(cfg, root, device)
         # elif cfg.dataset == 'Arxiv':
         #     valid_acces, test_acces, artifacts = train_arxiv(cfg, root, device)
         # elif cfg.dataset == 'PPI':
