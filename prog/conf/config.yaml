@@ -127,6 +127,7 @@ SAGE: &SAGE
 # Planetoid
 GCN_Cora: &GCN_Cora
   <<: [*Cora, *GCN]
+  ensemble: False
   norm: None
   n_layer: 2
   n_hid: 16
@@ -136,6 +137,7 @@ GCN_Cora: &GCN_Cora
 
 GAT_Cora: &GAT_Cora
   <<: [*Cora, *GAT]
+  ensemble: False
   norm: None
   n_layer: 2
   n_hid: 16
@@ -145,6 +147,7 @@ GAT_Cora: &GAT_Cora
 
 GCN_CiteSeer: &GCN_CiteSeers
   <<: [*CiteSeer, *GCN]
+  ensemble: False
   norm: LayerNorm
   n_layer: 2
   n_hid: 16
@@ -154,6 +157,7 @@ GCN_CiteSeer: &GCN_CiteSeers
 
 GAT_CiteSeer: &GAT_CiteSeer
   <<: [*CiteSeer, *GAT]
+  ensemble: False
   norm: LayerNorm
   n_layer: 2
   n_hid: 16
@@ -163,6 +167,7 @@ GAT_CiteSeer: &GAT_CiteSeer
 
 GCN_PubMed: &GCN_PubMed
   <<: [*PubMed, *GCN]
+  ensemble: False
   norm: LayerNorm
   n_layer: 2
   n_hid: 16
@@ -172,6 +177,7 @@ GCN_PubMed: &GCN_PubMed
 
 GAT_PubMed: &GAT_PubMed
   <<: [*PubMed, *GAT]
+  ensemble: False
   norm: LayerNorm
   n_layer: 2
   n_hid: 16
@@ -291,7 +297,37 @@ EnGAT_CiteSeer: &EnGAT_CiteSeer
   edge_method: shortest_path
   top_k: 2
 
+EnGCN_Cora: &EnGCN_Cora
+  <<: [*Cora, *GCN]
+  ensemble: True
+  norm: None
+  n_head: 8
+  n_layer: 2
+  n_hid: 16
+  dropout: 0.4
+  learning_rate: 0.01
+  weight_decay: 0.001
+  pickup_ratio: 0.3
+  strategy: low_degree
+  graphs_number: 30
+  edge_method: shortest_path
+  top_k: 2
 
+EnGCN_CiteSeer: &EnGCN_CiteSeer
+  <<: [*CiteSeer, *GCN]
+  ensemble: True
+  norm: LayerNorm
+  n_head: 8
+  n_layer: 2
+  n_hid: 16
+  dropout: 0.4
+  learning_rate: 0.01
+  weight_decay: 0.001
+  pickup_ratio: 0.3
+  strategy: low_degree
+  graphs_number: 30
+  edge_method: shortest_path
+  top_k: 2
 
 
 # for experiment visualize alpha

@@ -116,6 +116,22 @@ def ensemble(cfg, data, device):
 
     return acc_val, acc_test
 
+def train_and_test(cfg, data, device):
+    model = load_net(cfg).to(device)
+    optimizer = torch.optim.Adam(params       = model.parameters(), 
+                                 lr           = cfg.learning_rate, 
+                                 weight_decay = cfg.weight_decay)
+    early_stopping = EarlyStopping(patience=10)
+
+    for epoch in range(1, cfg.epochs+1):
+        loss_val, acc_val = train(cfg, data, model, optimizer, device)
+        early_stopping(loss_val, model)
+        if early_stopping.early_stop:
+            break
+
+    acc_test, alpha, whole_node_correct = test(data, model)
+
+    return acc_val, acc_test
 
 def run(cfg, root, device):
     if cfg.x_normalize:
@@ -135,8 +151,12 @@ def run(cfg, root, device):
                             transform = transforms)
         data = dataset[0].to(device)
         data, index = random_splits(data=data,num_classes=cfg.n_class,lcc_mask=None)
- 
-        valid_acc, test_acc = ensemble(cfg, data, device)
+
+        if cfg.ensemble == True:
+            valid_acc, test_acc = ensemble(cfg, data, device)
+        elif cfg.ensemble == False:
+            valid_acc, test_acc = train_and_test(cfg, data, device)
+
 
         valid_acces.append(valid_acc)
         test_acces.append(test_acc)
