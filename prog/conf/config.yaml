@@ -301,7 +301,6 @@ EnGCN_Cora: &EnGCN_Cora
   <<: [*Cora, *GCN]
   ensemble: True
   norm: None
-  n_head: 8
   n_layer: 2
   n_hid: 16
   dropout: 0.4
@@ -317,7 +316,6 @@ EnGCN_CiteSeer: &EnGCN_CiteSeer
   <<: [*CiteSeer, *GCN]
   ensemble: True
   norm: LayerNorm
-  n_head: 8
   n_layer: 2
   n_hid: 16
   dropout: 0.4
