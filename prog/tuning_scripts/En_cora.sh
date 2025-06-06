@@ -13,7 +13,7 @@ ary=("
      'EnGAT_Cora.n_hid=choice(8, 16)' \
      'EnGAT_Cora.pickup_ratio=choice(0.1, 0.2, 0.3, 0.4)' \
      'EnGAT_Cora.strategy=choice(random, low_degree)' \
-     'EnGAT_Cora.edge_method=choice(hybrid)' \
+     'EnGAT_Cora.edge_method=choice(shortest_path)' \
      'EnGAT_Cora.graphs_number=choice(10, 20, 30, 40, 50, 60)' \
      ")
 

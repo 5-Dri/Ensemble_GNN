@@ -142,23 +142,21 @@ def ensemble(cfg, data, device):
 
             # trainノードから選ぶ
             train_deg = deg[train_indices]
-            if cfg.strategy == "high_degree":
-                train_prob = train_deg + 1e-6
-            elif cfg.strategy == "low_degree":
-                train_prob = 1.0 / (train_deg + 1e-6)
-            else:
-                raise ValueError("Unknown strategy")
+            train_prob = train_deg + 1e-6 if cfg.strategy == "high_degree" else 1.0 / (train_deg + 1e-6)
             train_prob = train_prob / train_prob.sum()
+            train_pickup_num = min(train_pickup_num, len(train_indices))  # 安全性追加
             train_pickup = train_indices[torch.multinomial(train_prob, train_pickup_num, replacement=False)]
 
             # その他ノードから選ぶ
             other_deg = deg[other_indices]
-            if cfg.strategy == "high_degree":
-                other_prob = other_deg + 1e-6
-            elif cfg.strategy == "low_degree":
-                other_prob = 1.0 / (other_deg + 1e-6)
+            other_prob = other_deg + 1e-6 if cfg.strategy == "high_degree" else 1.0 / (other_deg + 1e-6)
             other_prob = other_prob / other_prob.sum()
-            other_pickup = other_indices[torch.multinomial(other_prob, other_pickup_num, replacement=False)]
+            other_pickup_num = min(other_pickup_num, len(other_indices))  # ★安全対策
+
+            if other_pickup_num == 0:
+                other_pickup = torch.tensor([], dtype=torch.long, device=device)
+            else:
+                other_pickup = other_indices[torch.multinomial(other_prob, other_pickup_num, replacement=False)]
 
             pickup_nodes = torch.cat([train_pickup, other_pickup])
 
@@ -166,15 +164,15 @@ def ensemble(cfg, data, device):
         pickup_x = data.x[pickup_nodes]
         pickup_y = data.y[pickup_nodes]
 
-        pickup_mask = index_to_mask(pickup_nodes, size=cfg.num_nodes)
+        # pickup_mask = index_to_mask(pickup_nodes, size=cfg.num_nodes)
 
         pickup_data = Data(
             x=pickup_x,
             y=pickup_y,
             edge_index=pickup_edge_index.to(device),
-            train_mask=data.train_mask[pickup_mask],
-            val_mask=data.val_mask[pickup_mask],
-            test_mask=data.test_mask[pickup_mask]
+            train_mask = data.train_mask[pickup_nodes],
+            val_mask   = data.val_mask  [pickup_nodes],
+            test_mask  = data.test_mask [pickup_nodes]
         )
         early_stopping = EarlyStopping(patience=10)
 

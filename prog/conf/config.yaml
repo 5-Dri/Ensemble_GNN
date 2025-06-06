@@ -327,6 +327,21 @@ EnGCN_CiteSeer: &EnGCN_CiteSeer
   edge_method: shortest_path
   top_k: 2
 
+EnGAT_PubMed: &EnGAT_PubMed
+  <<: [*PubMed, *GAT]
+  ensemble: True
+  norm: LayerNorm
+  n_layer: 2
+  n_hid: 16
+  dropout: 0.4
+  learning_rate: 0.005
+  weight_decay: 0.001
+  pickup_ratio: 0.3
+  strategy: low_degree
+  graphs_number: 30
+  edge_method: shortest_path
+  top_k: 2
+
 
 # for experiment visualize alpha
 GAT_PubMed_visualize_alpha: &GAT_PubMed_visualize_alpha
