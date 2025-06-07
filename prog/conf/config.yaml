@@ -275,9 +275,9 @@ EnGAT_Cora: &EnGAT_Cora
   dropout: 0.4
   learning_rate: 0.01
   weight_decay: 0.001
-  pickup_ratio: 0.3
+  pickup_ratio: 0.4
   strategy: low_degree
-  graphs_number: 30
+  graphs_number: 40
   edge_method: shortest_path
   top_k: 2
 
@@ -293,7 +293,7 @@ EnGAT_CiteSeer: &EnGAT_CiteSeer
   weight_decay: 0.001
   pickup_ratio: 0.3
   strategy: low_degree
-  graphs_number: 30
+  graphs_number: 40
   edge_method: shortest_path
   top_k: 2
 
